@@ -1,8 +1,9 @@
 package by.max.hibernate.converter;
 
 import by.max.hibernate.entity.Birthday;
-import jakarta.persistence.AttributeConverter;
 
+
+import javax.persistence.AttributeConverter;
 import java.sql.Date;
 import java.util.Optional;
 

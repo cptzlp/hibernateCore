@@ -1,37 +1,46 @@
 package by.max.hibernate;
 
-import by.max.hibernate.converter.BirthdayConverter;
-import by.max.hibernate.entity.Birthday;
-import by.max.hibernate.entity.Role;
-import by.max.hibernate.entity.User;
+
+import by.max.hibernate.entity.*;
+import by.max.hibernate.util.HibernateUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
+
 
 import java.time.LocalDate;
 
+@Slf4j
 public class HibernateRunner {
-    public static void main(String[] args) {
-        Configuration configuration = new Configuration();
-        configuration.configure();
-        configuration.addAttributeConverter(new BirthdayConverter(), true);
-        try (SessionFactory sessionFactory = configuration.buildSessionFactory();
-             Session session = sessionFactory.openSession()) {
-            session.beginTransaction();
-            User user = User.builder().username("ivan1313@mail.com")
-                    .firstname("Ivan")
-                    .lastname("Ivanov")
-                    .birthDate(new Birthday(LocalDate.of(2003, 2, 4)))
-                    .role(Role.ADMIN)
-                    .build();
 
-            //session.save(user);
-            //session.update(user);
-            //session.saveOrUpdate(user);
-            //session.delete(user);
-            User user1 = session.get(User.class, "ivan1313@mail.com");
-            System.out.println(user1.toString());
-            session.getTransaction().commit();
+    public static void main(String[] args) {
+
+        try (SessionFactory sessionFactory = HibernateUtil.buildSessionFactory()) {
+            try (Session session1 = sessionFactory.openSession()) {
+                session1.beginTransaction();
+
+                Company company = session1.get(Company.class, 2);
+
+                User user = User.builder()
+                        .username("ivan5@gmail.com")
+                        .personalInfo(PersonalInfo.builder()
+                                .firstname("Ivan")
+                                .lastname("Ivanov")
+                                .birthDate(new Birthday(LocalDate.of(2004, 2, 7)))
+                                .build())
+                        .role(Role.USER)
+                        .company(company)
+                        .build();
+
+                //session1.save(company);
+                session1.saveOrUpdate(user);
+
+
+                session1.getTransaction().commit();
+            }
+        } catch (Exception e) {
+            log.error("Exception occurred", e);
+            throw e;
         }
     }
 }

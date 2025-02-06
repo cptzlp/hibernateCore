@@ -1,10 +1,18 @@
 package by.max.hibernate.test;
 
 import by.max.hibernate.entity.Birthday;
+import by.max.hibernate.entity.Company;
 import by.max.hibernate.entity.Role;
 import by.max.hibernate.entity.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
+
+import javax.persistence.Column;
+import javax.persistence.Table;
+
+import by.max.hibernate.util.HibernateUtil;
+import lombok.Cleanup;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.service.spi.SessionFactoryServiceContributor;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
@@ -19,10 +27,22 @@ import java.util.stream.Collectors;
 
 public class HibernateRunnerTest {
 
+    @Test
+    public void checkOneToMany() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Company company = session.get(Company.class, 1);
+        System.out.println(company.getUsers());
+
+        session.getTransaction().commit();
+
+    }
 
     @Test
     public void testHibernateApi() throws SQLException, IllegalAccessException {
-        User user = User.builder()
+        /*User user = User.builder()
                 .username("ivan2424@mail.com")
                 .firstname("Ivan")
                 .lastname("Ivanov")
@@ -66,6 +86,6 @@ public class HibernateRunnerTest {
         preparedStatement.executeUpdate();
 
         preparedStatement.close();
-        connection.close();
+        connection.close();*/
     }
 }
