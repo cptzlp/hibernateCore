@@ -11,14 +11,13 @@
     <property name="show_sql">true</property>
     <property name="format_sql">true</property>
     <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL10Dialect</property>
-<!--    <property name="hibernate.hbm2ddl.auto">create</property>-->
+<!--     <property name="hibernate.hbm2ddl.auto">create</property>-->
     <mapping class="by.max.hibernate.entity.User"/>
     <mapping class="by.max.hibernate.entity.Company"/>
     <mapping class="by.max.hibernate.entity.Profile"/>
     <mapping class="by.max.hibernate.entity.Chat"/>
     <mapping class="by.max.hibernate.entity.UserChat"/>
     <mapping class="by.max.hibernate.entity.Payment"/>
-    <!--    <property name="hibernate.hbm2ddl.auto">create</property>-->
     <!-- DB schema will be updated if needed -->
     <!-- <property name="hibernate.hbm2ddl.auto">update</property> -->
   </session-factory>

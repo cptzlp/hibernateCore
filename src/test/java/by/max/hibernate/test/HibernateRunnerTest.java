@@ -1,31 +1,212 @@
 package by.max.hibernate.test;
 
-import by.max.hibernate.entity.Birthday;
-import by.max.hibernate.entity.Company;
-import by.max.hibernate.entity.Role;
-import by.max.hibernate.entity.User;
+import by.max.hibernate.dao.UserDao;
+import by.max.hibernate.entity.*;
 
-import javax.persistence.Column;
-import javax.persistence.Table;
+
+
 
 import by.max.hibernate.util.HibernateUtil;
 import lombok.Cleanup;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.service.spi.SessionFactoryServiceContributor;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
+
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.time.Instant;
+
 
 public class HibernateRunnerTest {
+    @Test
+    public void findAllByCompanyName(){
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        UserDao userDao = UserDao.getInstance();
+
+        System.out.println(userDao.findAllByCompanyName(session, "Amazon"));
+
+
+        session.getTransaction().commit();
+    }
+
+    @Test
+    public void findLimitedUsersOrderedByBirthday(){
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        UserDao userDao = UserDao.getInstance();
+
+        System.out.println(userDao.findLimitedUsersOrderedByBirthday(session, 1));
+
+
+        session.getTransaction().commit();
+    }
+
+
+    @Test
+    public void findByFirstName() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        UserDao userDao = UserDao.getInstance();
+
+        System.out.println(userDao.findByFirstName(session, "Ivan"));
+
+
+        session.getTransaction().commit();
+    }
+    @Test
+    public void findAll() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        UserDao userDao = UserDao.getInstance();
+
+        System.out.println(userDao.findAll(session));
+
+        Assertions.assertEquals(2, userDao.findAll(session).size());
+
+
+        session.getTransaction().commit();
+    }
+
+
+    @Test
+    public void checkHQL() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        String name = "Ivan";
+        String company = "Amazon";
+
+
+
+        session.getTransaction().commit();
+    }
+
+
+    @Test
+    public void checkInheritance() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Company company = Company.builder().name("Google").build();
+
+        session.save(company);
+
+
+        session.flush();
+        session.clear();
+
+
+        session.getTransaction().commit();
+    }
+
+    @Test
+    public void checkH2() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Company company = Company.builder().name("Google").build();
+
+        session.save(company);
+
+
+        session.getTransaction().commit();
+    }
+
+    @Test
+    public void checkManyToMany() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Chat chat = session.get(Chat.class, 1L);
+        User user = session.get(User.class, 3L);
+
+        UserChat userChat = new UserChat();
+
+        userChat.setCreatedAt(Instant.now());
+        userChat.setCreatedBy("Maxim");
+
+        userChat.setChat(chat);
+        userChat.setUser(user);
+
+        session.save(userChat);
+
+
+        session.getTransaction().commit();
+    }
+
+    @Test
+    public void checkOneToOne() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        User user = User.builder()
+                .username("ivan100@gmail.com")
+                .build();
+
+        Profile profile = Profile.builder()
+                .street("BikerStreet")
+                .language("EN")
+                .build();
+
+        session.save(user);
+        profile.setUser(user);
+        session.save(profile);
+        session.getTransaction().commit();
+
+    }
+
+    @Test
+    public void checkOrphanRemoval() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Company company = session.get(Company.class, 1);
+        company.getUsers().removeIf(user -> user.getId().equals(4L));
+
+
+        session.getTransaction().commit();
+    }
+
+    @Test
+    public void addNewUserAndCompany() {
+        @Cleanup SessionFactory sessionFactory = HibernateUtil.buildSessionFactory();
+        @Cleanup Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        Company company = Company.builder()
+                .name("Amazon")
+                .build();
+
+        User user = User.builder()
+                .username("ivan1@gmail.com")
+                .company(company)
+                .build();
+
+        company.addUser(user);
+
+        session.save(company);
+
+        session.getTransaction().commit();
+    }
+
 
     @Test
     public void checkOneToMany() {

@@ -4,7 +4,9 @@ package by.max.hibernate.entity;
 import javax.persistence.*;
 
 import lombok.*;
+import org.hibernate.envers.Audited;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +18,7 @@ import java.util.Set;
 @Builder
 @Data
 @Entity
-@Table(schema = "hibernate", name = "company")
+@Table(name = "company")
 public class Company {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,6 +28,12 @@ public class Company {
     private String name;
 
 
-    @OneToMany(mappedBy = "company")
-    private Set<User> users;
+    @Builder.Default
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<User> users = new HashSet<>();
+
+    public void addUser(User user) {
+        users.add(user);
+        user.setCompany(this);
+    }
 }
