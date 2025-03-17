@@ -1,14 +1,9 @@
 package by.max.hibernate.dao;
 
 
-import by.max.hibernate.converter.BirthdayConverter;
-import by.max.hibernate.entity.QCompany;
-import by.max.hibernate.entity.QUser;
+
 import by.max.hibernate.entity.User;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;

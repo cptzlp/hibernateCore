@@ -2,14 +2,16 @@ package by.max.hibernate.entity;
 
 
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 
 import lombok.*;
-import org.hibernate.envers.Audited;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+import org.hibernate.annotations.Cache;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,8 +20,9 @@ import java.util.Set;
 @Builder
 @Data
 @Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "company")
-public class Company {
+public class Company implements BaseEntity<Integer> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

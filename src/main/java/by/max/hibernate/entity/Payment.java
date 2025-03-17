@@ -1,15 +1,11 @@
 package by.max.hibernate.entity;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OptimisticLock;
 import org.hibernate.annotations.OptimisticLockType;
 import org.hibernate.annotations.OptimisticLocking;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
+
 
 import javax.persistence.*;
 
@@ -21,8 +17,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@OptimisticLocking(type = OptimisticLockType.VERSION)
-@Audited
 @Table(name = "payment")
 public class Payment implements BaseEntity<Long>{
 
@@ -38,6 +32,5 @@ public class Payment implements BaseEntity<Long>{
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id")
-    @NotAudited
     private User receiver;
 }

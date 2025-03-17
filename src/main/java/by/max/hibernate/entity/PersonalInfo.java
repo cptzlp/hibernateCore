@@ -4,6 +4,8 @@ import by.max.hibernate.converter.BirthdayConverter;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,5 +26,6 @@ public class PersonalInfo {
     private String lastname;
     @Convert(converter = BirthdayConverter.class)
     @Column(name = "birth_date")
+    @NotNull
     private Birthday birthDate;
 }
